@@ -1,0 +1,35 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    environment:
+      SECRET_KEY: ${SECRET_KEY:?Set SECRET_KEY in .env}
+      DATABASE_URL: sqlite:////data/secure_share.db
+      UPLOAD_FOLDER: /data/uploads
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5173}
+      MAX_CONTENT_LENGTH: ${MAX_CONTENT_LENGTH:-52428800}
+      ANOMALY_WINDOW_SECONDS: ${ANOMALY_WINDOW_SECONDS:-60}
+      ANOMALY_DOWNLOAD_THRESHOLD: ${ANOMALY_DOWNLOAD_THRESHOLD:-10}
+      BLOCKCHAIN_CHAIN_ID: ${BLOCKCHAIN_CHAIN_ID:-1337}
+      BLOCKCHAIN_REGISTRY_ADDRESS: ${BLOCKCHAIN_REGISTRY_ADDRESS:-}
+    ports:
+      - "127.0.0.1:5000:5000"
+    volumes:
+      - secure-share-data:/data
+    restart: unless-stopped
+  web:
+    build:
+      context: frontend
+      args:
+        VITE_API_URL: ${VITE_API_URL:-http://localhost:5000/api}
+    environment:
+      VITE_API_URL: http://localhost:5000/api
+    ports:
+      - "127.0.0.1:5173:5173"
+    depends_on:
+      - api
+    restart: unless-stopped
+
+volumes:
+  secure-share-data:

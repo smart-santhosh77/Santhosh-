@@ -1,0 +1,12 @@
+{
+  "name": "secure-file-sharing-blockchain",
+  "private": true,
+  "scripts": {
+    "migrate": "truffle migrate --network development",
+    "compile": "truffle compile",
+    "test": "truffle test --network test"
+  },
+  "devDependencies": {
+    "truffle": "^5.11.5"
+  }
+}
